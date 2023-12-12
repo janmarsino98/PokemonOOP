@@ -1,8 +1,12 @@
-from datasets import *
+from datasets.Pokemon import Pokemon
+from datasets.movement import movement
+from datasets.Pokemontype import PokemonType
 
 
-quickattack = movement("Quick attack", 130, 40, 100, "normal", "p")
+quickattack = movement("quickattack", 20, 20, 100, PokemonType.NORMAL, "P")
 noattack = movement("-", 0, 0, 0, "X", "X")
         
-Pikachu = Pokemon("Pikachu", 50, 100, 50, 100, 100, 100, 100, Type.ELECTRIC, [quickattack, noattack, noattack, noattack])
-Raichu = Pokemon("Raichu", 50, 100, 100, 30, 100, 100, 100, Type.ELECTRIC, [quickattack, noattack, noattack, noattack])
+Pikachu = Pokemon("Pikachu", 50, 100, 50, 100, 100, 100, 100, PokemonType.ELECTRIC, None, [quickattack, noattack, noattack, noattack])
+Raichu = Pokemon("Raichu", 50, 100, 100, 30, 100, 100, 100, PokemonType.ELECTRIC, None, [quickattack, noattack, noattack, noattack])
+
+Pikachu.attack_enemy(quickattack, Raichu)
