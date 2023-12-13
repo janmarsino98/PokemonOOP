@@ -1,5 +1,5 @@
-from movement import movement
+from datasets.movement import Movement
 
-quickattack = movement("quickattack", 40, 35, 100, "Normal","P")
+quickattack = Movement("quickattack", 40, 35, 100, "Normal","P")
 
 print(quickattack.name)

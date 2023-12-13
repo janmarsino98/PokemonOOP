@@ -1,4 +1,4 @@
-class movement:
+class Movement:
     def __init__(self, name, power, pp, precision, typ, category):
         self.name = name
         self.power = power

@@ -16,3 +16,4 @@ class PokemonType(Enum):
     ROCK = 13
     GHOST = 14
     DRAGON = 15
+    
