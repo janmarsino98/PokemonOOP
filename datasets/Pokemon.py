@@ -1,7 +1,5 @@
 import random
-from Pokemontype import PokemonType
 from table_types import table_types
-
 
 class Pokemon:
     def __init__(self, name, level, health, attack, defense, speed, speattack, spedefense, typ1, typ2, movements):
@@ -89,7 +87,7 @@ class Pokemon:
             boost_second_type = 2
         elif enemy.typ2 in table_types[movement.typ][1]:
             boost_second_type = 0.5
-        elif enemy.typ2 in table_types[movement.typ[2]]:
+        elif enemy.typ2 in table_types[movement.typ][2]:
             boost_second_type = 0
         else:
             boost_second_type = 1

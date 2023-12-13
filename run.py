@@ -1,6 +1,7 @@
 from datasets.Pokemon import Pokemon
 from datasets.movement import movement
 from datasets.Pokemontype import PokemonType
+from datasets import *
 
 
 quickattack = movement("quickattack", 20, 20, 100, PokemonType.NORMAL, "P")
