@@ -1,4 +1,18 @@
-from movement import Movement
+from datasets.movement import Movement
 from datasets.pokemontype import PokemonType
 
-quickattack = Movement("Quickattack", 30, 30, 100, PokemonType.NORMAL, "P")
+quickattack = Movement("Quickattack", 30, 30, 100, PokemonType.NORMAL, None,target=None)
+
+
+thund_wave = Movement(
+        name="Thunder Wave",
+        power = 0,
+        pp = 20,
+        accuracy=90,
+        typ=PokemonType.ELECTRIC,
+        effects=[
+            {"category": "status", "type": "paralyze", "probability": 90, "target": None},
+            {"category": "statChange", "stat": "attack", "magnitude": -1, "probability":20, "target":None}
+        ],
+        target=None
+)

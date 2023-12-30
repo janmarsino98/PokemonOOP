@@ -29,6 +29,7 @@ class Pokemon:
     
         self.movements = movements
         
+        
     def recalculate_stats(self):
         
         #Recalculates a pokemon stats according to the actual buffs
@@ -38,6 +39,7 @@ class Pokemon:
         self.speed = self.basespeed * c.BUFF_MULTIPLIERS[self.speedbuff]
         self.speattack = self.basespeattack * c.BUFF_MULTIPLIERS[self.speattackbuff]
         self.spedefense = self.basespedefense * c.BUFF_MULTIPLIERS[self.spedefensebuff]
+        
         
     def has_status(self):
         
@@ -52,23 +54,41 @@ class Pokemon:
         
         return self.health > 0
     
+    
     def select_movement(self):
         
         #Allows the user to select one of the pokemon's movements
         
+        
+        print("Select a valid movement that your pokemon will use this turn:")
+        
+        for i, movement in enumerate(self.movements):
+            if movement is not None:
+                print(f"{i+1}. {movement.name}")
+                
+            else:
+                print(f"{i+1}. No movement")
+        
         chosen = 0
-        while chosen not in [1,2,3,4]:
-            chosen = int(input(f"Please select a valid movement:\n1.{self.movements[0].name}\n2.{self.movements[1].name}\n3.{self.movements[2].name}\n4.{self.movements[3].name}\n"))
+        while chosen not in range(1, len(self.movements) + 1) or self.movements[chosen - 1] is None:
+            try:
+                chosen = int(input("Your choice: "))
+                print(chosen)
+            except ValueError:
+                print("Invalid input. Try again.")
+
         print(f"Your chosen attack is {self.movements[chosen-1].name}")
         return self.movements[chosen-1]
+    
         
     def attack_enemy(self, movement, enemy):
         
         #Calculates the amount of damage a movement will do
         
         if self.movement_connected(movement):
-            dmg = (((2*self.level*self.critical())/5+2)*movement.power * self.attack / enemy.defense / 50 + 2) * self.movement_stab(movement) * self.extra_dmg_type(movement, enemy) \
-            * random.randint(217, 255)//255
+            dmg = ((((2 * self.level * self.critical()) / 5 + 2) * movement.power + 2) * self.attack / enemy.defense / 50) * self.movement_stab(movement) * self.extra_dmg_type(movement, enemy) \
+            * random.randint(217, 255) // 255
+            print(f"The damage taken was {dmg}")
             enemy.set_health(dmg)
             movement.execute_effects()
             if not enemy.is_alive():
@@ -96,6 +116,7 @@ class Pokemon:
         threshold = random.random()
         return threshold < movement.accuracy / 100
     
+    
     def movement_stab(self, movement):
         
         #Checks wether the movement's type is the same as some pokemon type
@@ -106,6 +127,7 @@ class Pokemon:
             stab = 1
             
         return stab
+    
     
     def critical(self):
         
@@ -118,6 +140,7 @@ class Pokemon:
         else:
             return 1
         
+
     def extra_dmg_type(self, movement, enemy):
         
         #According to movement type and enemy types, calculates if the movement is supereffective, effective, not very effective, etc.
@@ -158,6 +181,5 @@ class Pokemon:
             
         elif extra_dmg == 0:
             print("The attack does not affect the enemy")
-        
             
         return boost_first_type * boost_second_type

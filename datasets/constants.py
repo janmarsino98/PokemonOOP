@@ -1,4 +1,4 @@
-from datasets.pokemontype import PokemonType
+from .pokemontype import PokemonType
 
 # FOR EACH TYPE WE HAVE: VERY EFFECTIVE, NOT VERY EFFECTIVE, IMMUNE
 
