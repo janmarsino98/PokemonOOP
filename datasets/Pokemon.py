@@ -79,27 +79,26 @@ class Pokemon:
 
         print(f"Your chosen attack is {self.movements[chosen-1].name}")
         return self.movements[chosen-1]
-    
         
-    def attack_enemy(self, movement, enemy):
-        
+    def attack_enemy(self, movement, target):
+        print(target)
         #Calculates the amount of damage a movement will do
         
         if self.movement_connected(movement):
-            dmg = ((((2 * self.level * self.critical()) / 5 + 2) * movement.power + 2) * self.attack / enemy.defense / 50) * self.movement_stab(movement) * self.extra_dmg_type(movement, enemy) \
+            dmg = ((((2 * self.level * self.critical()) / 5 + 2) * movement.power + 2) * self.attack / target.defense / 50) * self.movement_stab(movement) * self.extra_dmg_type(movement, target) \
             * random.randint(217, 255) // 255
             print(f"The damage taken was {dmg}")
-            enemy.set_health(dmg)
+            target.set_health(dmg)
             movement.execute_effects()
-            if not enemy.is_alive():
-                print(f"{enemy.name} is defeated")
+            if not target.is_alive():
+                print(f"{target.name} is defeated")
                 
             else:
-                print(f"{enemy.name} remaining HP is {enemy.health}")
+                print(f"{target.name} remaining HP is {target.health}")
             
             
         else:
-            print("The movement did not connect")
+            print(f"{movement.name} did not connect")
             
             
     def set_health(self, damage_taken):
@@ -133,10 +132,12 @@ class Pokemon:
         
         #Checks wether a movement will critically strike
         
-        threshold = self.speed / 2
-        current = random.random() * 100
+        threshold = self.speed / 512
+        current = random.random()
         if current < threshold:
+            print("It was a critical move")
             return 2
+            
         else:
             return 1
         

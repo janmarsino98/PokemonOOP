@@ -1,3 +1,5 @@
+from .pokemon import Pokemon
+
 class Trainer:
     def __init__(self, name):
         self.name = name
@@ -24,3 +26,27 @@ class Trainer:
     def set_battlefield_pokemon(self, pokemon):
         self.inbattlefieldpokemon = pokemon
         print(f"{self.name} pokemon is now {pokemon.name}.")
+        
+    def select_movement(self):
+        if isinstance(self.inbattlefieldpokemon, Pokemon):
+            print(f"Select which movement will {self.inbattlefieldpokemon.name} will use: ")
+            for n, movement in enumerate(self.inbattlefieldpokemon.movements):
+                if movement is not None:
+                    print(f"{n+1}. {movement.name}")
+                else:
+                    print(f"{n+1}. No movement")
+                    
+            chosen_movement = 0
+            while chosen_movement not in range(1, len(self.inbattlefieldpokemon.movements)+1) or self.inbattlefieldpokemon.movements[chosen_movement-1] is None:
+                try:
+                    chosen_movement = int(input("Your choice: "))
+                    
+                except:
+                    print("Invalid input. Please try again with a valid movement number.")
+            
+            print(f"The chosen movement was {self.inbattlefieldpokemon.movements[chosen_movement-1].name}")
+            return self.inbattlefieldpokemon.movements[chosen_movement-1]
+        
+        else:
+            print("You are not able to select a movement because you don't have a valid pokemon")
+            exit()
