@@ -1,8 +1,10 @@
 import random
 import datasets.constants as c
+from .pokemontype import PokemonType
+from .movement import Movement
 
 class Pokemon:
-    def __init__(self, name, level, health, attack, defense, speed, speattack, spedefense, typ1, typ2, movements):
+    def __init__(self, name: str, level: int, health: float, attack: float, defense: float, speed: float, speattack: float, spedefense: float, typ1: PokemonType, typ2: PokemonType, movements:list()):
         self.name = name
         self.level = level
         self.health = health
@@ -41,21 +43,21 @@ class Pokemon:
         self.spedefense = self.basespedefense * c.BUFF_MULTIPLIERS[self.spedefensebuff]
         
         
-    def has_status(self):
+    def has_status(self) -> bool:
         
         #Returns True if the pokemon has a status and False if it hasn't
         
         return self.status != None    
         
         
-    def is_alive(self):
+    def is_alive(self) -> bool:
         
         #Returns True if a pokemon is alive and False if it isn't
         
         return self.health > 0
     
     
-    def select_movement(self):
+    def select_movement(self) -> Movement:
         
         #Allows the user to select one of the pokemon's movements
         
@@ -80,8 +82,7 @@ class Pokemon:
         print(f"Your chosen attack is {self.movements[chosen-1].name}")
         return self.movements[chosen-1]
         
-    def attack_enemy(self, movement, target):
-        print(target)
+    def attack_enemy(self, movement: Movement, target, chosen_target = None):
         #Calculates the amount of damage a movement will do
         
         if self.movement_connected(movement):
@@ -89,7 +90,7 @@ class Pokemon:
             * random.randint(217, 255) // 255
             print(f"The damage taken was {dmg}")
             target.set_health(dmg)
-            movement.execute_effects()
+            movement.execute_effects(user=self, defender=target, chosen_target = chosen_target)
             if not target.is_alive():
                 print(f"{target.name} is defeated")
                 
@@ -108,7 +109,7 @@ class Pokemon:
         self.health = max(0, self.health - damage_taken)
         
         
-    def movement_connected(self, movement):
+    def movement_connected(self, movement) -> bool:
         
         # This function returns True if a movement connected and False if it did not according to the precision of the movement
         
@@ -116,7 +117,7 @@ class Pokemon:
         return threshold < movement.accuracy / 100
     
     
-    def movement_stab(self, movement):
+    def movement_stab(self, movement) -> float:
         
         #Checks wether the movement's type is the same as some pokemon type
         
@@ -128,7 +129,7 @@ class Pokemon:
         return stab
     
     
-    def critical(self):
+    def critical(self) -> int:
         
         #Checks wether a movement will critically strike
         
@@ -142,7 +143,7 @@ class Pokemon:
             return 1
         
 
-    def extra_dmg_type(self, movement, enemy):
+    def extra_dmg_type(self, movement, enemy) -> float:
         
         #According to movement type and enemy types, calculates if the movement is supereffective, effective, not very effective, etc.
         

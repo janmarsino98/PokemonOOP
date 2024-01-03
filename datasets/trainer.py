@@ -25,7 +25,7 @@ class Trainer:
     
     def set_battlefield_pokemon(self, pokemon):
         self.inbattlefieldpokemon = pokemon
-        print(f"{self.name} pokemon is now {pokemon.name}.")
+        print(f"{self.name}'s pokemon is now {pokemon.name}.")
         
     def select_movement(self):
         if isinstance(self.inbattlefieldpokemon, Pokemon):
@@ -50,3 +50,16 @@ class Trainer:
         else:
             print("You are not able to select a movement because you don't have a valid pokemon")
             exit()
+            
+    def select_target(self, own_pokemon, enemy_pokemon):
+        while True:
+            print("Choose a target for the movement:")
+            print(f"1. Own pokemon: {own_pokemon.name}")
+            print(f"2. Enemy pokemon: {enemy_pokemon.name}")
+            chosen_pokemon_number = input("Your choice: ")
+            if chosen_pokemon_number == "1":
+                return own_pokemon
+            elif chosen_pokemon_number == "2":
+                return enemy_pokemon
+            else:
+                print("Your choice is not correct.")
