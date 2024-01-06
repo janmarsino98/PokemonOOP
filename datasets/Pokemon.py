@@ -36,11 +36,37 @@ class Pokemon:
         
         #Recalculates a pokemon stats according to the actual buffs
         
-        self.attack = self.baseattack * c.BUFF_MULTIPLIERS[self.attackbuff]
-        self.defense = self.basedefense * c.BUFF_MULTIPLIERS[self.defensebuff]
-        self.speed = self.basespeed * c.BUFF_MULTIPLIERS[self.speedbuff]
-        self.speattack = self.basespeattack * c.BUFF_MULTIPLIERS[self.speattackbuff]
-        self.spedefense = self.basespedefense * c.BUFF_MULTIPLIERS[self.spedefensebuff]
+        if self.attackbuff < -6:
+            self.attackbuff = -6
+        elif self.attackbuff > 6:
+            self.attackbuff = 6
+        
+        if self.defensebuff < -6:
+            self.defensebuff = -6
+        elif self.defensebuff > 6:
+            self.defensebuff = 6
+            
+        if self.speedbuff < -6:
+            self.speedbuff = -6
+        elif self.speedbuff > 6:
+            self.speedbuff = 6
+            
+        if self.speattackbuff < -6:
+            self.speattackbuff = -6
+        elif self.speattackbuff > 6:
+            self.speattackbuff = 6
+            
+        if self.spedefensebuff < -6:
+            self.spedefensebuff = -6
+        elif self.spedefensebuff > 6:
+            self.spedefensebuff = 6
+        
+        
+        self.attack = round(self.baseattack * c.BUFF_MULTIPLIERS[self.attackbuff], 2)
+        self.defense = round(self.basedefense * c.BUFF_MULTIPLIERS[self.defensebuff], 2)
+        self.speed = round(self.basespeed * c.BUFF_MULTIPLIERS[self.speedbuff], 2)
+        self.speattack = round(self.basespeattack * c.BUFF_MULTIPLIERS[self.speattackbuff], 2)
+        self.spedefense = round(self.basespedefense * c.BUFF_MULTIPLIERS[self.spedefensebuff], 2)
         
         
     def has_status(self) -> bool:
@@ -84,12 +110,16 @@ class Pokemon:
         
     def attack_enemy(self, movement: Movement, target, chosen_target = None):
         #Calculates the amount of damage a movement will do
-        
+
         if self.movement_connected(movement):
-            dmg = ((((2 * self.level * self.critical()) / 5 + 2) * movement.power + 2) * self.attack / target.defense / 50) * self.movement_stab(movement) * self.extra_dmg_type(movement, target) \
-            * random.randint(217, 255) // 255
-            print(f"The damage taken was {dmg}")
-            target.set_health(dmg)
+            if movement.power != 0:
+                dmg = ((((2 * self.level * self.critical()) / 5 + 2) * movement.power + 2) * self.attack / target.defense / 50) * self.movement_stab(movement) * self.extra_dmg_type(movement, target) \
+                * random.randint(217, 255) // 255
+                print(f"The damage taken was {dmg}")
+                target.set_health(dmg)
+            else:
+                pass
+            
             movement.execute_effects(user=self, defender=target, chosen_target = chosen_target)
             if not target.is_alive():
                 print(f"{target.name} is defeated")

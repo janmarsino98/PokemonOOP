@@ -9,6 +9,7 @@ class EffectCategory(Enum):
     PRIORITY = 1
     STATCHANGE = 2
     STATUSEFFECT = 3
+    HEAL = 4
     
 class EffectType(Enum):
     PARALYZE = 1

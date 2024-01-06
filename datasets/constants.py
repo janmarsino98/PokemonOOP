@@ -1,4 +1,6 @@
 from .pokemontype import PokemonType
+from .targetype import *
+import json
 
 # FOR EACH TYPE WE HAVE: VERY EFFECTIVE, NOT VERY EFFECTIVE, IMMUNE
 
@@ -84,3 +86,10 @@ BUFF_MULTIPLIERS = {
     0: 1.0,
     1: 1.1, 2: 1.2, 3: 1.3, 4: 1.4, 5: 1.5, 6: 1.6
 }
+
+file = "movementsdict.txt"
+with open(file, "r") as file:
+    MOVEMENTS_D = json.load(file)
+
+POKEMON_STATUS = {EffectType.PARALYZE: "paralyzed", EffectType.BURN: "burned", EffectType.ICE: "frozen", EffectType.POISON: "Poisoned", EffectType.SLEEP: "fast asleep"}
+
