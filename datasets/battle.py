@@ -72,7 +72,10 @@ class Battle:
                 self.determine_winner()
                 
             self.end_turn()
-            
+    
+    
+        
+    
     def execute_movement(self, user_pokemon: Pokemon, enemy_pokemon: Pokemon, movement: Movement):
         user_pokemon.attack_enemy(movement, enemy_pokemon)
         

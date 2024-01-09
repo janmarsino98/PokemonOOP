@@ -1,6 +1,6 @@
 from datasets.movement import Movement
 from datasets.pokemontype import PokemonType
-from datasets.targetype import TargetType, EffectCategory, EffectType
+from datasets.targetype import TargetType, EffectCategory, StatusType
 import datasets.constants as c
 import json
 
@@ -18,7 +18,7 @@ thund_wave = Movement(
         accuracy=90,
         typ=PokemonType.ELECTRIC,
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.PARALYZE, "probability": 90, "target": TargetType.ENEMY},
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.PARALYZE, "probability": 90, "target": TargetType.ENEMY},
             {"category": EffectCategory.STATCHANGE, "stat": "attack", "magnitude": 1, "probability":20, "target":TargetType.OWN}
         ],
         default_target=TargetType.ENEMY
@@ -151,7 +151,7 @@ blizzard = Movement(
         accuracy=c.MOVEMENTS_D["Blizzard"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Blizzard"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.ICE, "probability": 10, "target": TargetType.ENEMY}
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.ICE, "probability": 10, "target": TargetType.ENEMY}
         ],
         default_target=TargetType.ENEMY
 )
@@ -164,7 +164,7 @@ body_slam = Movement(
         accuracy=c.MOVEMENTS_D["Body Slam"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Body Slam"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.PARALYZE, "probability": 30, "target": TargetType.ENEMY}
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.PARALYZE, "probability": 30, "target": TargetType.ENEMY}
         ],
         default_target=TargetType.ENEMY
 )
@@ -494,7 +494,7 @@ ember = Movement(
         accuracy=c.MOVEMENTS_D["Ember"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Ember"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.BURN, "probability": 10, "target": TargetType.ENEMY}
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
         default_target=TargetType.ENEMY
 )
@@ -520,7 +520,7 @@ fire_blast = Movement(
         accuracy=c.MOVEMENTS_D["Fire Blast"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Fire Blast"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.BURN, "probability": 10, "target": TargetType.ENEMY}
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
         default_target=TargetType.ENEMY
 )
@@ -533,7 +533,7 @@ fire_punch = Movement(
         accuracy=c.MOVEMENTS_D["Fire Punch"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Fire Punch"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.BURN, "probability": 10, "target": TargetType.ENEMY}
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
         default_target=TargetType.ENEMY
 )
@@ -572,7 +572,7 @@ flamethrower = Movement(
         accuracy=c.MOVEMENTS_D["Flamethrower"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Flamethrower"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATUSEFFECT, "type": EffectType.BURN, "probability": 10, "target": TargetType.ENEMY}
+            {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
         default_target=TargetType.OWN
 )

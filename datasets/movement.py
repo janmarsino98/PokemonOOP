@@ -2,10 +2,13 @@ from random import random
 from datasets.pokemontype import PokemonType
 import datasets.constants as c
 from .targetype import *
-from .pokemon import Pokemon
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from datasets.pokemon import Pokemon
 
 class Movement:
-    def __init__(self, name: str, power: int, pp: int, accuracy: float, typ: PokemonType, effects: list, default_target):
+    def __init__(self, name: str, power: int, pp: int, accuracy: float, typ: PokemonType, effects: list[Effect], default_target:TargetType):
         self.name = name
         self.power = power
         self.pp = pp
@@ -15,7 +18,7 @@ class Movement:
         self.target = None
         self.default_target = default_target
     
-    def movement_connected(self) -> bool:
+    def connected(self) -> bool:
         """
         Decides if a movement connected or failed
         
@@ -31,49 +34,65 @@ class Movement:
 
         threshold = random.random()
         return threshold < self.accuracy / 100
+            
+    def calculate_movement_damage(self, user: "Pokemon", target:"Pokemon") -> int:
         
-    def deal_dmg(self, user: Pokemon, target: Pokemon):
-        
+        """Calculates the amount of damage a certain movement will do
+
+        Args:
+            self: Instance of Movement
+            user(Pokemon): Pokemon that is using the movement
+            target(Pokemon): Pokemon that receives the movement
+             
+        Returns:
+            int: Amount of damage dealt
         """
-        Calculates and applies damage from the curret movement to the target
+               
+        if self.power != 0:
+            damage = int(((((2 * user.level * self.critical(user)) / 5 + 2) * self.power + 2) * user.attack / target.defense / 50) * self.movement_stab(user) * user.extra_dmg_type(self, target) \
+                    * random.randint(217, 255) / 255)
+            return damage
+        
+        else:
+            return 0
+        
+    def apply_damage(self, target: "Pokemon", damage: int):
+        
+        """Applies a given amount of damage to a target.
         
         Args:
-            self(Movement): The Movement instance
-            user(Pokemon): The user Pokemon that performs the movement
-            target(Pokemon): The target Pokemon that receives the damage
+            self: Instance of Movement
+            target(Pokemon): Pokemon that will get it's health changed.
+            damage(int): Amount that will be reduced (if positive) or increased (if negative).
             
         Returns:
             None
             
-        Notes:
-            - Each movement will role to get less or more damage
-            - 
-
-            
+        Comments:
+            - Informs the user of the new health of the target.
         """
         
-        if self.movement_connected(self):
-            if self.power != 0:
-                dmg = int(((((2 * user.level * self.critical()) / 5 + 2) * self.power + 2) * user.attack / target.defense / 50) * self.movement_stab(self) * user.extra_dmg_type(self, target) \
-                * random.randint(217, 255) / 255)
-                print(f"The damage taken was {dmg}")
-                target.set_health(dmg)
-                
-            else:
-                pass
+        target.set_health(damage)
+        print(f"{target.name} received damage. It now has {target.health} hps.")
+        
+    def calculate_and_apply_damage(self, user: "Pokemon", target: "Pokemon"):
+        
+        """Calculates the amount of damage that a movement would strike and applies it to the target
+        
+        Args:
+            self: Instance of Movement
+            user(Pokemon): Pokemon that uses the movement
+            target(Pokemon): Pokemon taht receives the movement
             
-            self.execute_effects(user=self, defender=target, chosen_target = chosen_target)
-            if not target.is_alive():
-                print(f"{target.name} is defeated")
-                
-            else:
-                print(f"{target.name} remaining HP is {target.health}")
-            
-            
-        else:
-            print(f"{self.name} did not connect")
+        Returns:
+            None
+        """
+        
+        damage = self.calculate_movement_damage(user, target)
+        if damage != 0:
+            self.apply_damage(target, damage)
 
-    def movement_stab(self, user: Pokemon) -> float:
+    def movement_stab(self, user: "Pokemon") -> float:
     
         """
         Checks if the movement type is the same as one of the user types. If it is, the damage of the move increases
@@ -99,13 +118,14 @@ class Movement:
         return stab
 
     
-    def critical(self) -> int:
+    def critical(self, user: "Pokemon") -> int:
     
         """
         Calculates wether a movement scored a critical move or not
         
         Args:
             self(Movement): The Movement instance
+            user(Pokemon): The pokemon that used the movement
             
         Returns:
             1 if no criticial
@@ -116,7 +136,7 @@ class Movement:
     
         """
 
-        threshold = self.speed / 512
+        threshold = user.speed / 512
         current = random.random()
         if current < threshold:
             print("It was a critical move")
@@ -125,38 +145,35 @@ class Movement:
         else:
             return 1
         
-    def execute_effects(self, user, defender, chosen_target = None ):
         
-        # This function will execute the different effects of a movement
+    def execute_movement_effects(self):
+        for effect in self.effects:
+            if effect.connected():
+                if effect.category == EffectCategory.STATCHANGE:
+                    print("OK")
         
         
+       
+    """def execute_effects(self):
         
         if self.effects is None:
-            
-            # If the movement has no effects it will do nothing.
-            
             pass
         
         else:
-            
             for effect in self.effects:
-                
-                #for each effect we will determine which is the target of that effect according to the target of that effect. The TargetType can be OWN, ENEMY or CHOOSE
-                
-                #PRIORITY MOVEMENTS
                 
                 if effect["category"] == EffectCategory.PRIORITY:
                     print("The movement will hit first")
                 
                 
                 else:
-                    target = None
+                    effect_target = None
                     
                     if effect["target"] == TargetType.OWN:
                         
                         #If the TargetType is OWN the user will receive the effect
                         
-                        target = user
+                        effect_target = self.user
                     
                     elif effect["target"] == TargetType.ENEMY:
                         
@@ -185,7 +202,7 @@ class Movement:
                     #HEALTH MOVEMENTS
                     
                     elif effect["category"] == EffectCategory.HEAL:
-                        self.executeHealEffect(user=user, amount_to_heal=user.dmg/2)
+                        self.executeHealEffect(user=user, amount_to_heal=user.dmg/2)"""
                         
     
     def executeHealEffect(self, user, amount_to_heal):
@@ -194,7 +211,7 @@ class Movement:
             print(f"{user.name} healed {amount_to_heal} hp's.")
 
                 
-    def executeStatChange(self, stat: str, target: Pokemon, magnitude: float):
+    def executeStatChange(self, stat: str, target, magnitude: float):
         
         """
         Modifies a Pokemon's stat when a movement is used
@@ -263,15 +280,8 @@ class Movement:
             - Prints a statement to inform the user of the status change
         """
         
-        if isinstance(target, Pokemon):
-            if target.has_status()==False:
-                if self.connected(effectAccuracy):
-                    target.status = effectType
-                    print(f"{target.name} is {c.POKEMON_STATUS[effectType]}.")
-                    
-        else:
-            print(f"The target {target} is not a Pokemon")
-                    
 
-    def connected(self, accuracy: float) -> bool:
-        return random() < accuracy/100
+        if target.has_status()==False:
+            if self.connected(effectAccuracy):
+                target.status = effectType
+                print(f"{target.name} is {c.POKEMON_STATUS[effectType]}.")

@@ -34,7 +34,17 @@ class Pokemon:
         
     def recalculate_stats(self):
         
-        #Recalculates a pokemon stats according to the actual buffs
+        """Recalculates every stat of a pokemon to apply new buffs
+        
+        Args:
+            self: Instance of Pokemon
+            
+        Returns:
+            None
+            
+        Comments:
+            - Recalculates attack, defense, speattack, spedefense of a Pokemon
+        """
         
         if self.attackbuff < -6:
             self.attackbuff = -6
@@ -71,42 +81,92 @@ class Pokemon:
         
     def has_status(self) -> bool:
         
-        #Returns True if the pokemon has a status and False if it hasn't
+        """Checks wether a pokemon has a status
+        
+        Args:
+            self: Instance of Pokemon
+
+        Returns:
+            bool: True if the pokemon has a status, False if not
+        """
         
         return self.status != None    
         
         
     def is_alive(self) -> bool:
         
-        #Returns True if a pokemon is alive and False if it isn't
+        """Checks wether a pokemon is alive
+        
+        Args:
+            self: Instance of Pokemon
+
+        Returns:
+            bool: True if the pokemon is alive, False if not
+        """
         
         return self.health > 0
     
-    
-    def select_movement(self) -> Movement:
+    def print_pokemon_movements(self):
         
-        #Allows the user to select one of the pokemon's movements
+        """
+        Prints every movement of a certain pokemon.
         
-        
-        print("Select a valid movement that your pokemon will use this turn:")
+        Args:
+            self: Instance of Pokemon
+            
+        Returns:
+            None
+        """
         
         for i, movement in enumerate(self.movements):
             if movement is not None:
-                print(f"{i+1}. {movement.name}")
+                print(f"{i}. {movement.name}")
                 
             else:
-                print(f"{i+1}. No movement")
+                print(f"{i}. No movement")
+                
+    def enter_valid_movement_selection(self):
         
-        chosen = 0
-        while chosen not in range(1, len(self.movements) + 1) or self.movements[chosen - 1] is None:
-            try:
-                chosen = int(input("Your choice: "))
-                print(chosen)
-            except ValueError:
-                print("Invalid input. Try again.")
+        """
+        When the user introduces a valid movement number, the choice gets returned as an integer
 
-        print(f"Your chosen attack is {self.movements[chosen-1].name}")
-        return self.movements[chosen-1]
+        Returns:
+            int: The movement index of the movement that the user wants to select
+        """
+        
+        chosen_movement_number = 0
+        while chosen_movement_number not in range(1, len(self.movements) + 1) or self.movements[chosen_movement_number - 1] is None:
+            try:
+                chosen_movement_number = int(input("Enter your choice: "))
+            
+            except ValueError:
+                print("Ivalid input. Try again.")
+        
+        return chosen_movement_number - 1
+        
+    def use_movement(self, movement: Movement):
+        if self.has_movement(movement):
+            print(f"{self.name} used {movement.name}.")
+            movement.execute_movement(self)
+            
+            
+        else:
+            print(f"{self.name} does not have {movement.name} in his movements.")
+        
+    def has_movement(self, movement: Movement):
+        
+        """
+        Checks wether a pokemon has a movement
+
+        Args:
+            self: Instance of Pokemon
+            movement (Movement): Instance of the movement that we want to check if a pokemon has
+        
+        Returns:
+            bool: True if the pokemon has the movement, False if not
+        """
+        
+        return movement in self.movements
         
     def attack_enemy(self, movement: Movement, target, chosen_target = None):
         #Calculates the amount of damage a movement will do

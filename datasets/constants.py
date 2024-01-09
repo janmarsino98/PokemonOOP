@@ -91,5 +91,5 @@ file = "movementsdict.txt"
 with open(file, "r") as file:
     MOVEMENTS_D = json.load(file)
 
-POKEMON_STATUS = {EffectType.PARALYZE: "paralyzed", EffectType.BURN: "burned", EffectType.ICE: "frozen", EffectType.POISON: "Poisoned", EffectType.SLEEP: "fast asleep"}
+POKEMON_STATUS = {StatusType.PARALYZE: "paralyzed", StatusType.BURN: "burned", StatusType.ICE: "frozen", StatusType.POISON: "Poisoned", StatusType.SLEEP: "fast asleep"}
 
