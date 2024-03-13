@@ -73,7 +73,7 @@ class Movement:
         """
         
         target.set_health(damage)
-        print(f"{target.name} received damage. It now has {target.health} hps.")
+        print(f"{target.name} received {damage} damage. It now has {target.health} hps.")
         
     def calculate_and_apply_damage(self, user: "Pokemon", target: "Pokemon"):
         
@@ -150,7 +150,7 @@ class Movement:
         for effect in self.effects:
             if effect.connected():
                 if effect.category == EffectCategory.STATCHANGE:
-                    print("OK")
+                    effect = StatChangeEffect("")
         
         
        

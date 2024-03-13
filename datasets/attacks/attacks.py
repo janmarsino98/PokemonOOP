@@ -1,6 +1,6 @@
 from datasets.movement import Movement
 from datasets.pokemontype import PokemonType
-from datasets.targetype import TargetType, EffectCategory, StatusType
+from datasets.targetype import TargetType, EffectCategory, StatusType, StatChangeEffect
 import datasets.constants as c
 import json
 
@@ -24,6 +24,18 @@ thund_wave = Movement(
         default_target=TargetType.ENEMY
 )
 
+halfheal = Movement(
+        name = "halfheal",
+        power = 0,
+        pp = 1,
+        accuracy= 100,
+        typ = None,
+        effects = [
+                {"category": EffectCategory.HEAL, "heal_amount": 30, "probability":100, "target":TargetType.OWN}
+        ],default_target=TargetType.OWN
+)
+
+
 #Ok
 acid = Movement(
         name="Acid",
@@ -32,12 +44,13 @@ acid = Movement(
         accuracy=c.MOVEMENTS_D["Acid"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Acid"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 1, "probability":10, "target":TargetType.ENEMY}
+            {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 1, "probability":10, "target":TargetType.ENEMY},
+            {"category": EffectCategory.HEAL, "heal_amount": 30, "probability":100, "target":TargetType.OWN}
         ],
         default_target=TargetType.ENEMY
 )
 
-dict_file = "movementsdict.txt"
+dict_file = r"movementsdict.txt"
 with open(dict_file, "r") as file:
     move_d = json.load(file)
 
@@ -48,7 +61,7 @@ acid_armor = Movement(
         pp = c.MOVEMENTS_D["Acid Armor"]["pp"],
         accuracy=c.MOVEMENTS_D["Acid Armor"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Acid Armor"]["type"].upper()],
-        effects=[
+        effects=[ 
             {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
         default_target=TargetType.OWN
@@ -188,7 +201,8 @@ bonemerang = Movement(
         accuracy=c.MOVEMENTS_D["Bonemerang"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Bonemerang"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
+            {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN},
+            {"category": EffectCategory.DAMAGE, "probability":c.MOVEMENTS_D["Bonemerang"]["accuracy"], "target": TargetType.ENEMY}
         ],
         default_target=TargetType.OWN
 )

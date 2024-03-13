@@ -2,11 +2,13 @@ import random
 import datasets.constants as c
 from .pokemontype import PokemonType
 from .movement import Movement
+from .targetype import *
 
 class Pokemon:
-    def __init__(self, name: str, level: int, health: float, attack: float, defense: float, speed: float, speattack: float, spedefense: float, typ1: PokemonType, typ2: PokemonType, movements:list()):
+    def __init__(self, name: str, level: int, health: float, attack: float, defense: float, speed: float, speattack: float, spedefense: float, typ1: PokemonType, typ2: PokemonType, movements):
         self.name = name
         self.level = level
+        self.max_health = health
         self.health = health
         self.baseattack = attack
         self.basedefense = defense
@@ -120,10 +122,10 @@ class Pokemon:
         
         for i, movement in enumerate(self.movements):
             if movement is not None:
-                print(f"{i}. {movement.name}")
+                print(f"{i+1}. {movement.name}")
                 
             else:
-                print(f"{i}. No movement")
+                print(f"{i+1}. No movement")
                 
     def enter_valid_movement_selection(self):
         
@@ -135,23 +137,118 @@ class Pokemon:
         """
         
         chosen_movement_number = 0
-        while chosen_movement_number not in range(1, len(self.movements) + 1) or self.movements[chosen_movement_number - 1] is None:
+        
+        while True:
             try:
                 chosen_movement_number = int(input("Enter your choice: "))
-            
+                
             except ValueError:
-                print("Ivalid input. Try again.")
+                print("Your choice is not a number.")
+                
+            if chosen_movement_number not in range(1, len(self.movements) + 1):
+                print("The chosen number is too large or too small.")
+            elif self.movements[chosen_movement_number - 1] is None:
+                print("The pokemeon has not an available movement at the selected number.")
+            else:
+                print(f"{self.name} is going to use {self.movements[chosen_movement_number-1].name}")
+                return chosen_movement_number - 1
         
-        return chosen_movement_number - 1
-        
-    def use_movement(self, movement: Movement):
+    def use_movement(self, movement: Movement, enemy: "Pokemon"):
+        print(f"{self.name} is trying to use {movement.name}")
         if self.has_movement(movement):
             print(f"{self.name} used {movement.name}.")
-            movement.execute_movement(self)
-            
             
         else:
             print(f"{self.name} does not have {movement.name} in his movements.")
+            return False
+        
+        self.set_target(movement, enemy)
+        
+        for effect in movement.effects:
+            
+            if effect["category"] == EffectCategory.STATCHANGE:
+                effect = StatChangeEffect(self, enemy, effect["stat"], effect["magnitude"], effect["probability"], enemy if effect["target"]== TargetType.ENEMY else self)
+                if effect.connected():
+                    print(f"The actual {effect.stat} from {effect.target.name} is {effect.target.get_current_stat(effect.stat)}")
+                    effect.target.modify_stat(effect.stat, effect.magnitude)
+                else:
+                    print("The effect did not connect.")
+                    
+            elif effect["category"] == EffectCategory.HEAL:
+                effect = HealEffect(self, enemy, effect["heal_amount"], effect["probability"], enemy if effect["target"]== TargetType.ENEMY else self)
+                if effect.connected():
+                    print(f"{effect.target.name}'s health was {effect.target.health}")
+                    effect.target.heal(effect.heal_amount)
+                    print(f"{effect.target.name}'s health is now {effect.target.health}")
+                else:
+                    print("The effect did not connect.")
+                
+            elif effect["category"] == EffectCategory.STATUSEFFECT:
+                effect = StatusEffect(self, enemy, effect["type"], effect["probability"], enemy if effect["target"]== TargetType.ENEMY else self)
+                print("Using status effect.")
+                if effect.target.has_status():
+                    print("The pokemon already has a status.")
+                    
+                elif effect.connected():
+                    effect.target.status = effect.type
+                    print(f"{effect.target.name} was {effect.type}")
+                    
+                else:
+                    print("The effect did not connect.")
+                
+            elif effect["category"] == EffectCategory.DAMAGE:
+                print(effect)
+                effect = DamageEffect(self, enemy, effect["probability"], movement, enemy if effect["target"]== TargetType.ENEMY else self)
+                print(effect.user.name)
+            
+                if effect.connected():
+                    dmg = ((((2 * effect.user.level * effect.user.critical()) / 5 + 2) * movement.power + 2) * effect.user.attack / effect.target.defense / 50) * effect.user.movement_stab(movement) * effect.user.extra_dmg_type(movement, effect.target) \
+                    * random.randint(217, 255) // 255
+                    effect.target.set_health(dmg)
+                    print(f"The movement caused {dmg} on {effect.target.name}")
+
+                
+    def heal(self, amount):
+        if self.health + amount < self.max_health:
+            self.health += amount
+            
+        else:
+            self.health = self.max_health
+              
+    def get_current_stat(self, stat):
+        if stat == "attack":
+            return self.attack
+        
+        elif stat == "defense":
+            return self.defense
+        
+        elif stat == "speed":
+            return self.speed
+        
+        elif stat == "speattack":
+            return self.speattack
+        
+        elif stat == "spedefense":
+            return self.spedefense
+        
+        else:
+            print(f"The stat {stat} was not defined.")
+             
+    def modify_stat(self, stat, magnitude):
+        if stat == "attack":
+            self.attackbuff += magnitude
+        elif stat == "defense":
+            self.defensebuff += magnitude
+        elif stat == "speed":
+            self.speedbuff += magnitude
+        elif stat == "speattack":
+            self.speattackbuff += magnitude
+        elif stat == "spedefense":
+            self.spedefensebuff += magnitude   
+        else:
+            print(f"The stat {stat} is not defined")
+        self.recalculate_stats()
+        print(f"{self.name}'s {stat} was buffed and is now {self.get_current_stat(stat)}")
         
     def has_movement(self, movement: Movement):
         
@@ -233,9 +330,24 @@ class Pokemon:
             return 1
         
 
-    def extra_dmg_type(self, movement, enemy) -> float:
+    def extra_dmg_type(self, movement: Movement, enemy) -> float:
         
-        #According to movement type and enemy types, calculates if the movement is supereffective, effective, not very effective, etc.
+        """Returns the type effectiveness boost of a movement
+        
+        Args:
+            - self: An instance of Pokemon
+            - movement: The used movement
+            - enemy(Pokemon): The enemy pokemon
+            
+        Returns:
+            - float: The effectiveness boost
+        
+        Comments:
+            - The effectiveness buff must be between 0 and 2
+            - If it's 0 the movement does not affect the enemy's type
+            - Informs the trainer of the effectiveness of the used attack
+        
+        """
         
         if enemy.typ1 in c.TABLETYPES[movement.typ][0]:
             boost_first_type = 2
@@ -275,3 +387,13 @@ class Pokemon:
             print("The attack does not affect the enemy")
             
         return boost_first_type * boost_second_type
+    
+    
+    def set_target(self, movement:"Movement", enemy:"Pokemon"):
+        if movement.default_target == "OWN":
+            target = self
+            
+        else:
+            target = enemy
+            
+        return target

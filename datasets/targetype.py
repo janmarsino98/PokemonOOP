@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from datasets.pokemon import Pokemon
+    from datasets.movement import Movement
     
     
 class TargetType(Enum):
@@ -86,21 +87,37 @@ class StatChangeEffect(Effect):
             
             else:
                 self.target = self.enemy
-        
-
-        
-class StatusEffect(Effect):
-    def __init__(self, status_type: StatusType, probability: float, target: TargetType):
-        super().__init__(EffectCategory.STATUSEFFECT, probability)
-        self.status_type = status_type
+                
+class HealEffect(Effect):
+    
+    def __init__(self, user, enemy, heal_amount: float, probability: float, target: TargetType):
+        super().__init__(user, enemy, EffectCategory.HEAL, probability)
+        self.heal_amount = heal_amount
         self.target = target
         
-class PriorityEffect(Effect):
-    def __init__(self):
-        super().__init__(pokemons.Pikachu, pokemons.Raichu, EffectCategory.PRIORITY, probability=100)
+    def get_target(self) -> "Pokemon":
+        if self.target == TargetType.OWN:
+            self.target == self.user
+            
+        elif self.target == TargetType.ENEMY:
+            self.target == self.enemy
+            
+        else:
+            print("The target type is not recognized.")
+        
+class StatusEffect(Effect):
+    def __init__(self, user, enemy, type: StatusType, probability: float, target: TargetType):
+        super().__init__(user, enemy, EffectCategory.STATUSEFFECT, probability)
+        self.type = type
+        self.target = target
+        
+class DamageEffect(Effect):
+    def __init__(self, user, enemy, probability:float, movement:"Movement", target: TargetType):
+        super().__init__(user, enemy, EffectCategory.DAMAGE, probability)
+        self.movement = movement
+        self.target = target
+        
+#class PriorityEffect(Effect):
+#    def __init__(self):
+#        super().__init__(pokemons.Pikachu, pokemons.Raichu, EffectCategory.PRIORITY, probability=100)
 
-
-#Examples of each effect category        
-x = PriorityEffect()
-y = StatChangeEffect("attack", 1, 40, TargetType.CHOOSE)
-y.get_target()
