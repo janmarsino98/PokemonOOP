@@ -1,12 +1,78 @@
 from .pokemon import Pokemon
 from .movement import Movement
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from datasets.pokemon import Pokemon
+    
+    
 
 class Trainer:
     def __init__(self, name: str):
         self.name = name
         self.pokemons = [None] * 6
         self.inbattlefieldpokemon = None
+        
+    def choose_next_pokemon(self):
+        
+        """
+        Shows an enumerated list of the user's pokemons and he/she can select the next pokemon
+        
+        Args:
+            self: Instance of trainer
+            
+        Returns:
+            None
+        """
+        choice = 0
+        alive_pokemons = self.get_alive_pokemons()
+        
+        while choice not in range(1, len(alive_pokemons)+1):
+            print("Choose one of your pokemons:")
+            self.print_alive_pokemons()
+            choice = int(input("Your choice:"))
+            
+            if choice not in range(1, len(alive_pokemons)+1):
+                print("The chosen number is not in range.")
+                
+        self.set_battlefield_pokemon(alive_pokemons[choice-1])
     
+    def get_alive_pokemons(self) -> list["Pokemon"]:
+        
+        """
+        Get a list of alive pokemons from a user
+        
+        Args:
+            self: Instance of trainer
+            
+        Returns:
+            list of instances of the Pokemon class
+        """ 
+        
+        alive_pokemons = []
+        for pokemon in self.pokemons:
+            if not pokemon:
+                pass
+            elif pokemon.is_alive():
+                alive_pokemons.append(pokemon)
+                
+        return alive_pokemons  
+    
+    def print_alive_pokemons(self) -> None:
+        
+        """
+        Shows the user an enumerated list of his/her alive pokemons
+        
+        Args:
+            self: Instance of trainer
+            
+        Returns:
+            None
+        """
+        
+        alive_pokemons = self.get_alive_pokemons()
+        for n, pokemon in enumerate(alive_pokemons):
+            print(f"{n+1}. {pokemon.name}")
         
     def set_pokemon(self, index: int, pokemon: Pokemon):
         
@@ -19,10 +85,11 @@ class Trainer:
         """
         
         if 0 <= index <= len(self.pokemons):
+            user_response = ""
             if self.pokemons[index] != None:
                 print(f"Are you sure you want to change {self.pokemons[index].name} for {pokemon.name}?.")
                 while user_response not in ["Y", "N"]:
-                    user_response = input("Type 'Y' if you are sure or 'N' to cancel")
+                    user_response = input("Type 'Y' if you are sure or 'N' to cancel: ")
                     if user_response == "Y":
                         pass
                     else:

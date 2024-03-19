@@ -1,6 +1,9 @@
 from datasets.movement import Movement
 from datasets.pokemontype import PokemonType
-from datasets.targetype import TargetType, EffectCategory, StatusType, StatChangeEffect
+from datasets.targetype import TargetType
+from datasets.effectCategory import EffectCategory
+from datasets.statusType import StatusType
+from datasets.effect import *
 import datasets.constants as c
 import json
 
@@ -8,7 +11,7 @@ import json
 
 
 # No definitiu
-quickattack = Movement("Quickattack", 30, 30, 100, PokemonType.NORMAL, effects=[{"category": EffectCategory.PRIORITY}], default_target=TargetType.ENEMY)
+quickattack = Movement("Quickattack", 30, 30, 100, PokemonType.NORMAL, effects=[{"category": EffectCategory.PRIORITY}], targetType=TargetType.ENEMY)
 
 # No definitiu
 thund_wave = Movement(
@@ -21,7 +24,7 @@ thund_wave = Movement(
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.PARALYZE, "probability": 90, "target": TargetType.ENEMY},
             {"category": EffectCategory.STATCHANGE, "stat": "attack", "magnitude": 1, "probability":20, "target":TargetType.OWN}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 halfheal = Movement(
@@ -32,7 +35,7 @@ halfheal = Movement(
         typ = None,
         effects = [
                 {"category": EffectCategory.HEAL, "heal_amount": 30, "probability":100, "target":TargetType.OWN}
-        ],default_target=TargetType.OWN
+        ],targetType=TargetType.OWN
 )
 
 
@@ -44,10 +47,10 @@ acid = Movement(
         accuracy=c.MOVEMENTS_D["Acid"]["accuracy"],
         typ=PokemonType[c.MOVEMENTS_D["Acid"]["type"].upper()],
         effects=[
-            {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 1, "probability":10, "target":TargetType.ENEMY},
+            {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 1, "probability":100, "target":TargetType.ENEMY},
             {"category": EffectCategory.HEAL, "heal_amount": 30, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 dict_file = r"movementsdict.txt"
@@ -64,7 +67,7 @@ acid_armor = Movement(
         effects=[ 
             {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #OK
@@ -77,7 +80,7 @@ agility = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -90,7 +93,7 @@ amnesia = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "spedefense", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -103,7 +106,7 @@ aurora_beam = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": -1, "probability":10, "target":TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 #OK
@@ -116,7 +119,7 @@ barrage = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #OK
@@ -129,7 +132,7 @@ barrier = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 bide = Movement(
@@ -141,7 +144,7 @@ bide = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 bind = Movement(
@@ -153,7 +156,7 @@ bind = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -166,7 +169,7 @@ blizzard = Movement(
         effects=[
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.ICE, "probability": 10, "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 #Ok
@@ -179,7 +182,7 @@ body_slam = Movement(
         effects=[
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.PARALYZE, "probability": 30, "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 bone_club = Movement(
@@ -191,7 +194,7 @@ bone_club = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 bonemerang = Movement(
@@ -202,9 +205,8 @@ bonemerang = Movement(
         typ=PokemonType[c.MOVEMENTS_D["Bonemerang"]["type"].upper()],
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN},
-            {"category": EffectCategory.DAMAGE, "probability":c.MOVEMENTS_D["Bonemerang"]["accuracy"], "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -217,7 +219,7 @@ bubble = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 1, "probability":10, "target":TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 #Ok
@@ -230,7 +232,7 @@ bubble_beam = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 1, "probability":10, "target":TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 clamp = Movement(
@@ -242,7 +244,7 @@ clamp = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 comet_punch = Movement(
@@ -254,7 +256,7 @@ comet_punch = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 confuse_ray = Movement(
@@ -266,7 +268,7 @@ confuse_ray = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 confusion = Movement(
@@ -278,7 +280,7 @@ confusion = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 constrict = Movement(
@@ -290,7 +292,7 @@ constrict = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 1, "probability":10, "target":TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 conversion = Movement(
@@ -302,7 +304,7 @@ conversion = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 counter = Movement(
@@ -314,7 +316,7 @@ counter = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 crabhammer = Movement(
@@ -326,7 +328,7 @@ crabhammer = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 cut = Movement(
@@ -337,7 +339,7 @@ cut = Movement(
         typ=PokemonType[c.MOVEMENTS_D["Cut"]["type"].upper()],
         effects=[
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 defense_curl = Movement(
@@ -349,7 +351,7 @@ defense_curl = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "defense", "magnitude": 1, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 dig = Movement(
@@ -361,7 +363,7 @@ dig = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 disable = Movement(
@@ -373,7 +375,7 @@ disable = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 dizzy_punch = Movement(
@@ -385,7 +387,7 @@ dizzy_punch = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 double_kick = Movement(
@@ -397,7 +399,7 @@ double_kick = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 
@@ -410,7 +412,7 @@ double_slap = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 double_team = Movement(
@@ -422,7 +424,7 @@ double_team = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 double_edge = Movement(
@@ -434,7 +436,7 @@ double_edge = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 
@@ -447,7 +449,7 @@ dragon_rage = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 
@@ -460,7 +462,7 @@ dream_eater = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -472,7 +474,7 @@ drill_peck = Movement(
         typ=PokemonType[c.MOVEMENTS_D["Drill Peck"]["type"].upper()],
         effects=[
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 
@@ -485,7 +487,7 @@ earthquake = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -497,7 +499,7 @@ egg_bomb = Movement(
         typ=PokemonType[c.MOVEMENTS_D["Egg Bomb"]["type"].upper()],
         effects=[
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 #Ok
@@ -510,7 +512,7 @@ ember = Movement(
         effects=[
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 
@@ -523,7 +525,7 @@ explosion = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -536,7 +538,7 @@ fire_blast = Movement(
         effects=[
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 #Ok
@@ -549,7 +551,7 @@ fire_punch = Movement(
         effects=[
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.ENEMY
+        targetType=TargetType.ENEMY
 )
 
 
@@ -562,7 +564,7 @@ fire_spin = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 
@@ -575,7 +577,7 @@ fissure = Movement(
         effects=[
             {"category": EffectCategory.STATCHANGE, "stat": "speed", "magnitude": 2, "probability":100, "target":TargetType.OWN}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )
 
 #Ok
@@ -588,5 +590,5 @@ flamethrower = Movement(
         effects=[
             {"category": EffectCategory.STATUSEFFECT, "type": StatusType.BURN, "probability": 10, "target": TargetType.ENEMY}
         ],
-        default_target=TargetType.OWN
+        targetType=TargetType.OWN
 )

@@ -2,17 +2,15 @@ from datasets.trainer import Trainer
 from datasets.pokemons.pokemons import *
 from datasets.battle import Battle
 
+# CREATE AN INSTANCE OF A TRAINER
 jan = Trainer("Jan")
 roger = Trainer("Roger")
+
+# CREATE A BATTLE INSTANCE BETWEEN 2 POKEMONS
 battle = Battle(jan, roger)
-jan_pikachu = Pikachu
-roger_raichu = Raichu
+jan.set_pokemon(0, Pikachu)
+roger.set_pokemon(0,Raichu)
 
-jan.set_pokemon(0, jan_pikachu)
-roger.set_pokemon(0,roger_raichu)
-
-jan.set_battlefield_pokemon(jan_pikachu)
-roger.set_battlefield_pokemon(roger_raichu)
-
-jan_pikachu.set_health(40)
-jan_pikachu.use_movement(jan_pikachu.movements[3],roger_raichu)
+battle.run_first_turn()
+for _ in range(5):
+    battle.run_turn()

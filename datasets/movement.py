@@ -3,20 +3,20 @@ from datasets.pokemontype import PokemonType
 import datasets.constants as c
 from .targetype import *
 from typing import TYPE_CHECKING
+from .effect import *
 
 if TYPE_CHECKING:
     from datasets.pokemon import Pokemon
 
 class Movement:
-    def __init__(self, name: str, power: int, pp: int, accuracy: float, typ: PokemonType, effects: list[Effect], default_target:TargetType):
+    def __init__(self, name: str, power: int, pp: int, accuracy: float, typ: PokemonType, effects: list[Effect], targetType:TargetType):
         self.name = name
         self.power = power
         self.pp = pp
         self.accuracy = accuracy
         self.typ = typ
         self.effects = effects
-        self.target = None
-        self.default_target = default_target
+        self.targetType = targetType
     
     def connected(self) -> bool:
         """

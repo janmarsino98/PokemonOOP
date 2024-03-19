@@ -1,5 +1,8 @@
+import math
 
-file = r'movementsdict.txt'
+x = math.inf
 
-with open(file, "r") as file:
-    print(file)
+y = math.inf
+
+l = [(x,"b"), (y, "a")]
+print(sorted(l))

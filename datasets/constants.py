@@ -1,6 +1,7 @@
 from .pokemontype import PokemonType
 from .targetype import *
 import json
+from .statusType import StatusType
 
 # FOR EACH TYPE WE HAVE: VERY EFFECTIVE, NOT VERY EFFECTIVE, IMMUNE
 
